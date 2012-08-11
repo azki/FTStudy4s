@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script>
+function assert( is, str )
+{
+	var s = "[" + is + "] " +  str;
+	document.write( s + "</br>");
+}
+
+
+</script>
+</head>
+<body>
+
+<!-- 
+3.1 아래를 알맞게 고쳐보세요. 단어 한개? 정도만 고치면 될 것 같네요. 풀어보세용 ㅋㅋ
+
+var ninja = {
+  yell: function(n){
+    return n > 0 ? ninja.yell(n-1) + "a" : "hiy";
+  }
+};
+assert( ninja.yell(4) == "hiyaaaa", "A single object isn't too bad, either." );
+
+var samurai = { yell: ninja.yell };
+var ninja = null;
+
+try {
+  samurai.yell(4);
+} catch(e){
+  assert( false, "Uh, this isn't good! Where'd ninja.yell go?" );
+}
+-->
+	<script>
+		var ninja = {
+			yell : function(n) {
+				return n > 0 ? ninja.yell(n - 1) + "a" : "hiy";
+			}
+		};
+		assert(ninja.yell(4) == "hiyaaaa",
+				"A single object isn't too bad, either.");
+
+		var samurai = {
+			yell : ninja.yell
+		};
+		//var ninja = null;
+
+		try {
+			assert(samurai.yell(4) == "hiyaaaa",
+				"A single object isn't too bad, either.");
+
+		} catch (e) {
+			assert(false, "Uh, this isn't good! Where'd ninja.yell go?");
+		}
+
+	</script>
+
+
+<!-- 
+	3.2 아래를 알맞게 고쳐보세요. assert 쪽은 나두고 계산하는걸 캐시하는 기능을 추가하는 거지요.
+
+function isPrime( num ) {
+  var prime = num != 1; // Everything but 1 can be prime
+  for ( var i = 2; i < num; i++ ) {
+    if ( num % i == 0 ) {
+      prime = false;
+      break;
+    }
+  }
+  return prime;
+}
+
+assert( isPrime(5), "Make sure the function works, 5 is prime." );
+assert( isPrime.cache[5], "Is the answer cached?" );
+ -->
+	<script>
+		function isPrime(num) {
+			var prime = num != 1; // Everything but 1 can be prime
+			for ( var i = 2; i < num; i++) {
+				if (num % i == 0) {
+					prime = false;
+					break;
+				}
+			}
+			isPrime.cache[ num ] = prime;
+			// isPrime.cache[ num + "" ] = prime; -- 문자열로 써주는게 더 맞는건가???
+			return prime;
+		}
+		isPrime.cache = {};
+
+		assert(isPrime(5), "Make sure the function works, 5 is prime.");
+		assert(isPrime.cache[5], "Is the answer cached?");
+	</script>
+
+<!-- 
+
+3.3 구현해보세요~
+
+function Ninja(name){
+  // Implement!
+}
+
+var ninja = new Ninja("John");
+assert( ninja.name == "John", "The name has been set on initialization" );
+
+ninja.changeName("Bob");
+assert( ninja.name == "Bob", "The name was successfully changed." );
+
+-->
+	<script>
+		function Ninja(name) {
+			// Implement!
+			return {
+				name: name,
+				changeName: function(new_name) {
+					this.name = new_name;
+				}
+			}
+			//this.name = name;
+			//this.changeName = function ( new_name ) {
+				//this.name = new_name;
+			//}
+		}
+		
+
+		var ninja = new Ninja("John");
+		assert(ninja.name == "John", "The name has been set on initialization");
+
+		ninja.changeName("Bob");
+		assert(ninja.name == "Bob", "The name was successfully changed.");
+	</script>
+
+	<!-- 
+3.4 이 것도 안돌아가는데 고쳐보세요.
+
+function highest(){
+  return arguments.sort(function(a,b){
+    return b - a;
+  });
+}
+assert(highest(1, 1, 2, 3)[0] == 3, "Get the highest value.");
+assert(highest(3, 1, 2, 3, 4, 5)[1] == 4, "Verify the results.");
+ -->
+	<script>
+		function highest() {
+			/*
+			var arr = [];
+			for ( var i = 0 ; i < arguments.length ; i++ ) {
+				arr[i] = arguments[i];	
+			}
+			*/
+			var arr = Array.prototype.slice.call(arguments);
+			
+			arr.sort( function( a, b ) {
+				 return b - a; 
+			});
+			
+			return arr;
+		}
+		assert(highest(1, 1, 2, 3)[0] == 3, "Get the highest value.");
+		assert(highest(3, 1, 2, 3, 4, 5)[1] == 4, "Verify the results.");
+	</script>
+
+	<!-- 
+
+3.5 이것도 구현해보세요.
+
+function multiMax(multi){
+  // Make an array of all but the first argument
+  var allButFirst = ___;
+
+  // Find the largest number in that array of arguments
+  var largestAllButFirst = ___;
+
+  // Return the multiplied result
+  return multi * largestAllButFirst;
+}
+assert( multiMax(3, 1, 2, 3) == 9, "3*3=9 (First arg, by largest.)" );
+
+ -->
+	<script>
+		function multiMax(multi) {
+			// Make an array of all but the first argument
+			var allButFirst = Array.prototype.slice.call(arguments, 1);
+
+			// Find the largest number in that array of arguments
+			var largestAllButFirst = Math.max.apply(0,allButFirst);
+
+			// Return the multiplied result
+			return multi * largestAllButFirst;
+		}
+		assert(multiMax(3, 1, 2, 3) == 9, "3*3=9 (First arg, by largest.)");
+	</script>
+</body>
+</html>

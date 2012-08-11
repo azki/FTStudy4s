@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script>
+function assert( is, str )
+{
+	var s = "[" + is + "] " +  str;
+	document.write( s + "</br>");
+}
+
+
+</script>
+
+</head>
+<body>
+<!-- 
+1. 요거 잘 되게ㅎ
+
+var count = 0;
+for ( var i = 0; i < 4; i++ ) {
+  setTimeout(function(){
+    assert( i == count++, "Check the value of i." );
+  }, i * 200);
+}
+ -->
+
+<script>
+var count = 0;
+for ( var i = 0; i < 4; i++ ) {
+	( function e(i){ 
+		setTimeout( function () { assert( i == count++, "Check the value of i." ); }, i * 200);
+	} ) (i);
+}
+</script>
+
+<!-- 
+2. 주석 부분에 구현 추가.
+
+function Ninja(){
+  this.swung = true;
+}
+
+var ninjaA = new Ninja();
+var ninjaB = new Ninja();
+
+// Add a method to the Ninja prototype which
+// returns itself and modifies swung
+
+assert( !ninjaA.swing().swung, "Verify that the swing method exists and returns an instance." );
+assert( !ninjaB.swing().swung, "and that it works on all Ninja instances." );
+ -->
+<script>
+function Ninja(){
+  this.swung = true;
+}
+
+var ninjaA = new Ninja();
+var ninjaB = new Ninja();
+
+// Add a method to the Ninja prototype which
+// returns itself and modifies swung
+Ninja.prototype.swing = function () { 
+	return this.swung;
+}
+
+assert( !ninjaA.swing().swung, "Verify that the swing method exists and returns an instance." );
+assert( !ninjaB.swing().swung, "and that it works on all Ninja instances." );
+</script>
+
+<!-- 
+3. Ninja 가 Person 을 상속 받는 형태로 고쳐보세요.
+
+function Person(){}
+Person.prototype.dance = function(){};
+
+function Ninja(){}
+
+// Achieve similar, but non-inheritable, results
+Ninja.prototype = Person.prototype;
+Ninja.prototype = { dance: Person.prototype.dance };
+
+assert( (new Ninja()) instanceof Person, "Will fail with bad prototype chain." );
+ -->
+<script>
+function Person(){}
+Person.prototype.dance = function(){};
+
+function Ninja(){}
+
+// Achieve similar, but non-inheritable, results
+Ninja.prototype = Person.prototype;
+//Ninja.prototype = { dance: Person.prototype.dance };
+
+
+assert( (new Ninja()) instanceof Person, "Will fail with bad prototype chain." );
+</script>
+
+<!-- 
+4. 역시 상속... Me 를 구현하셈.
+
+function Person(){}
+Person.prototype.getName = function(){
+  return this.name;
+};
+
+// Implement a function that inherits from Person
+// and sets a name in the constructor
+
+var me = new Me();
+assert( me.getName(), "A name was set." );
+ -->
+<script>
+function Person(){}
+Person.prototype.getName = function(){
+  return this.name;
+};
+
+// Implement a function that inherits from Person
+// and sets a name in the constructor
+function Me(n) { this.name = n; }
+Me.prototype = Person.prototype;
+Me.prototype.constructor = Me;
+
+var me = new Me("true");
+assert( me.getName(), "A name was set." );
+</script>
+
+<!-- 
+5. keys 함수를 고쳐보세요.
+
+Object.prototype.keys = function(){
+  var keys = [];
+  for ( var i in this )
+    keys.push( i );
+  return keys;
+};
+
+var obj = { a: 1, b: 2, c: 3 };
+
+assert( obj.keys().length == 3, "We should only have 3 properties." );
+
+delete Object.prototype.keys;
+ -->
+<script>
+Object.prototype.keys = function(){
+  var keys = [];
+  for ( var i in this ){
+	  if( this.hasOwnProperty(i) ) 
+		  keys.push( i );
+  }
+  return keys;
+};
+
+var obj = { a: 1, b: 2, c: 3 };
+
+assert( obj.keys().length == 3, "We should only have 3 properties." );
+
+delete Object.prototype.keys;
+
+</script>
+</body>
+</html>
